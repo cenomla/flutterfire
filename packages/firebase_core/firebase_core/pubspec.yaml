@@ -16,6 +16,8 @@ flutter:
         pluginClass: FLTFirebaseCorePlugin
       web:
         default_package: firebase_core_web
+      linux:
+         pluginClass: FlFirebaseCorePlugin
 
 dependencies:
   firebase_core_platform_interface: ^2.1.0

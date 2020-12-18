@@ -25,3 +25,6 @@ To contribute a change to this plugin,
 please review our [contribution guide](https://github.com/FirebaseExtended/flutterfire/blob/master/CONTRIBUTING.md)
 and open a [pull request](https://github.com/FirebaseExtended/flutterfire/pulls).
 
+## Desktop
+
+In order to use this plugin on desktop you must have the `firebase_cpp_sdk` downloaded and the environment variable `FIREBASE_CPP_SDK_DIR` set to it's location
