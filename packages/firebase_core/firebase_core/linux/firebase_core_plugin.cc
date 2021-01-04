@@ -21,6 +21,7 @@ const char kMethodAppSetAutomaticResourceManagementEnabled[] = "FirebaseApp#setA
 const char kName[] = "name";
 const char kAppName[] = "appName";
 const char kOptions[] = "options";
+const char kFirebaseDefaultAppName[] = "[DEFAULT]";
 //const char kEnabled[] = "enabled";
 //const char kPluginConstants[] = "pluginConstants";
 //const char kIsAutomaticDataCollectionEnabled[] = "isAutomaticDataCollectionEnabled";
@@ -52,7 +53,14 @@ struct _FlFirebaseCorePlugin {
 
 G_DEFINE_TYPE(FlFirebaseCorePlugin, fl_firebase_core_plugin, g_object_get_type())
 
-static FlValue* firebase_app_to_map(firebase::App *app) {
+static char const* get_firebase_app_name(char const *name) {
+	if (strcmp(name, firebase::kDefaultAppName) == 0) {
+		return kFirebaseDefaultAppName;
+	}
+	return name;
+}
+
+static FlValue* firebase_app_to_map(firebase::App *app, bool isDefault = false) {
 	FlValue *appMap = fl_value_new_map();
 	FlValue *optionsMap = fl_value_new_map();
 
@@ -76,7 +84,7 @@ static FlValue* firebase_app_to_map(firebase::App *app) {
 		fl_value_set_take(optionsMap,
 				fl_value_new_string(kFirebaseOptionsTrackingId), fl_value_new_string(options.ga_tracking_id()));
 
-	fl_value_set_take(appMap, fl_value_new_string(kName), fl_value_new_string(app->name()));
+	fl_value_set_take(appMap, fl_value_new_string(kName), fl_value_new_string(get_firebase_app_name(app->name())));
 	fl_value_set_take(appMap, fl_value_new_string(kOptions), optionsMap);
 
 	return appMap;
@@ -135,7 +143,7 @@ static FlMethodResponse* initialize_firebase_core(_FlFirebaseCorePlugin *self) {
 		self->_coreInitialized = true;
 	}
 
-	g_autoptr(FlValue) apps = fl_value_new_list();
+	FlValue *apps = fl_value_new_list();
 
 	// Add the default instance to the list of existing firebase apps
 	firebase::App *defaultInst = firebase::App::GetInstance();
@@ -220,7 +228,6 @@ FlFirebaseCorePlugin* fl_firebase_core_plugin_new(FlPluginRegistrar* registrar) 
 }
 
 void fl_firebase_core_plugin_register_with_registrar(FlPluginRegistrar* registrar) {
-  g_warning("Plugin registered");
   FlFirebaseCorePlugin* plugin = fl_firebase_core_plugin_new(registrar);
   g_object_unref(plugin);
 }

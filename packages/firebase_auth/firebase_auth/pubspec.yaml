@@ -17,6 +17,8 @@ flutter:
         pluginClass: FLTFirebaseAuthPlugin
       web:
         default_package: firebase_auth_web
+      linux:
+        pluginClass: FlFirebaseAuthPlugin
 
 dependencies:
   meta: ^1.0.4
